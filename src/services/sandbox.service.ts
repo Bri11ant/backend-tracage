@@ -13,23 +13,21 @@ export class SandboxService {
   }
 
   getProject(id: string) {
-    if(!id) {
-        throw new HttpException(404, `Project not found!`);
+    if (!id) {
+      throw new HttpException(404, `Project not found!`);
     }
     const list = this.getProjectList();
-    const index = list.findIndex(
-      p => p.toLowerCase().replace(' ', '_') === id
-    )
-    if(index<0) {
-      throw new HttpException(404, `Project not found!`)
+    const index = list.findIndex(p => p.toLowerCase().replace(' ', '_') === id);
+    if (index < 0) {
+      throw new HttpException(404, `Project not found!`);
     }
     const projectTitle = list[index];
     const projectPath = path.join(this.ROOT, `${projectTitle}/${projectTitle}.json`);
 
-    const projectData = fs.readFileSync(projectPath, {encoding: 'utf-8'});
+    const projectData = fs.readFileSync(projectPath, { encoding: 'utf-8' });
     const project: CreateProject = { title: projectTitle, data: projectData };
 
-    return {...project}
+    return { ...project };
   }
 
   createProject(projectData: CreateProject) {
@@ -38,11 +36,13 @@ export class SandboxService {
     }
     const projectTitle = projectData.title.charAt(0).toUpperCase() + projectData.title.slice(1).toLowerCase();
     const list = this.getProjectList();
-    if (list.indexOf(projectTitle) > -1) {
+    if (list.indexOf(projectTitle) > -1 && !projectData.data) {
       throw new HttpException(409, `The "${projectTitle}" project already exists!`);
     }
     const projectPath = path.join(this.ROOT, projectTitle);
-    fs.mkdirSync(projectPath);
+    if (!fs.existsSync(projectPath)) {
+      fs.mkdirSync(projectPath);
+    }
     const filePath = path.join(projectPath, `${projectTitle}.json`);
     fs.writeFileSync(filePath, projectData.data, { encoding: 'utf-8' });
 
@@ -60,14 +60,14 @@ export class SandboxService {
     if (!projectData) {
       throw new HttpException(401, `Project data required!`);
     }
-    const projectTitle = projectData.title;
+    const projectTitle = projectData.title.charAt(0).toUpperCase() + projectData.title.slice(1).toLowerCase();
     const list = this.getProjectList();
     if (list.indexOf(projectTitle) < 0) {
       throw new HttpException(404, `The "${projectTitle}" project not found!`);
     }
     const projectPath = path.join(this.ROOT, projectTitle);
     const filePath = path.join(projectPath, `${projectTitle}.json`);
-    fs.writeFileSync(filePath, projectData.data, {encoding: 'utf-8'});
+    fs.writeFileSync(filePath, projectData.data, { encoding: 'utf-8' });
 
     const project: UpdateProject = {
       title: projectTitle,

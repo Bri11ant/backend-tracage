@@ -3,7 +3,7 @@ import { SandboxService } from '@/services/sandbox.service';
 import { Body, Controller, Get, HttpCode, Param, Post, Put } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
 
-@Controller()
+@Controller('/api')
 export class SandboxController {
   service = new SandboxService();
 
@@ -15,11 +15,10 @@ export class SandboxController {
   }
 
   @Get('/projects/:id')
-  @OpenAPI({summary: 'Get project'})
+  @OpenAPI({ summary: 'Get project' })
   @HttpCode(200)
-  async getProject(
-  @Param('id') projectID: string) {
-    return this.service.getProject(projectID)
+  async getProject(@Param('id') projectID: string) {
+    return this.service.getProject(projectID);
   }
 
   @Post('/projects')
@@ -30,9 +29,9 @@ export class SandboxController {
   }
 
   @Put('/projects')
-  @OpenAPI({summary: 'Update a project'})
+  @OpenAPI({ summary: 'Update a project' })
   @HttpCode(200)
   async updateProject(@Body() projectData: UpdateProject) {
-    return this.service.updateProject(projectData)
+    return this.service.updateProject(projectData);
   }
 }
