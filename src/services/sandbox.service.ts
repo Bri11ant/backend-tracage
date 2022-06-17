@@ -36,7 +36,7 @@ export class SandboxService {
     }
     const projectTitle = projectData.title.charAt(0).toUpperCase() + projectData.title.slice(1).toLowerCase();
     const list = this.getProjectList();
-    if (list.indexOf(projectTitle) > -1 && !projectData.data) {
+    if (list.indexOf(projectTitle) > -1 && (!projectData.data || projectData.data==='{}')) {
       throw new HttpException(409, `The "${projectTitle}" project already exists!`);
     }
     const projectPath = path.join(this.ROOT, projectTitle);
