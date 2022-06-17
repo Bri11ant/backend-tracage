@@ -4,6 +4,8 @@ import { Controller, Get } from 'routing-controllers';
 export class IndexController {
   @Get('/')
   index() {
-    return 'OK';
+    return {
+      message: 'Hello world',
+    };
   }
 }
