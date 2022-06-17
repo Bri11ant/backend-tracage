@@ -12,6 +12,26 @@ export class SandboxService {
     return fs.readdirSync(this.ROOT);
   }
 
+  getProject(id: string) {
+    if(!id) {
+        throw new HttpException(404, `Project not found!`);
+    }
+    const list = this.getProjectList();
+    const index = list.findIndex(
+      p => p.toLowerCase().replace(' ', '_') === id
+    )
+    if(index<0) {
+      throw new HttpException(404, `Project not found!`)
+    }
+    const projectTitle = list[index];
+    const projectPath = path.join(this.ROOT, `${projectTitle}/${projectTitle}.json`);
+
+    const projectData = fs.readFileSync(projectPath, {encoding: 'utf-8'});
+    const project: CreateProject = { title: projectTitle, data: projectData };
+
+    return {...project}
+  }
+
   createProject(projectData: CreateProject) {
     if (!projectData) {
       throw new HttpException(401, `Project data required!`);
