@@ -1,6 +1,6 @@
-import { CreateProject } from './../dtos/project.dto';
+import { CreateProject, UpdateProject } from './../dtos/project.dto';
 import { SandboxService } from '@/services/sandbox.service';
-import { Body, Controller, Get, HttpCode, Post } from 'routing-controllers';
+import { Body, Controller, Get, HttpCode, Post, Put } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
 
 @Controller()
@@ -20,5 +20,12 @@ export class SandboxController {
   @HttpCode(201)
   async createProject(@Body() projectData: CreateProject) {
     return this.service.createProject(projectData);
+  }
+
+  @Put('/projects')
+  @OpenAPI({summary: 'Update a project'})
+  @HttpCode(200)
+  async updateProject(@Body() projectData: UpdateProject) {
+    return this.service.updateProject(projectData)
   }
 }
